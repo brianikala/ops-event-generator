@@ -14,15 +14,10 @@ This project is for iKala AIOps project - Event Generator part.
 .
 ├── publisher.py
 ├── subscriber.py
-├── sa-keys
-│   ├── cloud-tech-dev-2021-dc80bb9b9276.json
-│   └── cloud-tech-dev-2021-e5ed60d5782a.json
 ├── Dockerfile
 └── main.py
 ```
 
-**sa-keys**
-These are latest service account key pairs used to manipulate Cloud Pub/Sub and Cloud Run within project [cloud-tech-dev-2021](https://console.cloud.google.com/home/dashboard?project=cloud-tech-dev-2021).
 
 > NOTICE: The best practice is to avoid upload key-paris to third-party repository which is risky to key leaking.
 
