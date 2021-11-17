@@ -11,7 +11,6 @@ from customer_data import get_enabled_events, get_service_account
 
 
 project_id = "cloud-tech-dev-2021" # prod
-# project_id = "ikala-cloud-sandbox-veck" # dev
 topic_id = os.environ.get("TOPIC_ID")
 
 app = Flask(__name__)
@@ -31,7 +30,7 @@ https://demeter-xog7tpoz7a-de.a.run.app/enabled_events
 @app.route("/enabled_events")
 def enabled_events():
     project_id = get_project_id()
-    customer = 'a' # FIXME: should not be hard-coded
+    customer = os.environ.get("CUSTOMER")
 
     events = get_enabled_events(customer, project_id)
     return ''.join(events)
@@ -44,7 +43,8 @@ https://demeter-xog7tpoz7a-de.a.run.app/service_account
 @app.route("/service_account")
 def service_account():
     project_id = get_project_id()
-    service_account = get_service_account(project_id)
+    customer = os.environ.get("CUSTOMER")
+    service_account = get_service_account(customer, project_id)
     return service_account
 
 #### ↑ DEVELOPEMENT ONLY ↑ ####
