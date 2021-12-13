@@ -84,12 +84,12 @@ def create_trigger(event):
                 "value": event['serviceName']
             }        
         ],
-        "serviceAccount": event['service-account'],
+        "serviceAccount": event['serviceAccount'],
         "destination": {
             'cloudRun': {
-                'service': event['destination-run-service'],
-                'region': event['destination-run-region'],
-                'path': event['destination-run-path']
+                'service': event['destinationRunService'],
+                'region': event['destinationRunRegion'],
+                'path': event['destinationRunPath']
             }       
         }
     }
