@@ -1,0 +1,25 @@
+{
+  "name": "projects/customer-a-project-1/locations/global/triggers/fgsgsdfsdg",
+  "eventFilters": [
+        {
+          "attribute": "methodName",
+          "value": "GetIamPolicy"
+        },
+        {
+          "attribute": "type",
+          "value": "google.cloud.audit.log.v1.written"
+        },
+        {
+          "attribute": "serviceName",
+          "value": "cloudresourcemanager.googleapis.com"
+        }
+  ],
+  "serviceAccount": "1097778675156-compute@developer.gserviceaccount.com",
+  "destination": {
+    "cloudRun": {
+      "service": "demeter",
+      "path": "/eventarc",
+      "region": "asia-east1"
+    }
+  }
+}
