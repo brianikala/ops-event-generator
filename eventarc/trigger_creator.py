@@ -11,17 +11,16 @@ from adminrun import get_enabled_events
 
 # FIXME: 不是 GCP 的 EG project 怎麼辦？
 CREDENTIAL, PROJECT_ID = default(scopes=["https://www.googleapis.com/auth/cloud-platform"])
-SERVICE_ACCOUNT = f"{PROJECT_ID}-compute@developer.gserviceaccount.com"
 
 def hello_world():
     return "eventarc/hanlders/trigger_creator"
 
 # access ER BQ table Projects.methodNames by accessing API of Admin run
 def get_eventarc_detail():
-    events = get_enabled_events(PROJECT_ID)['events']
-    return events
+    data = get_enabled_events(PROJECT_ID)
+    return data
 
-def create_trigger(event):
+def create_trigger(event, service_account):
     """
     https://cloud.google.com/eventarc/docs/reference/rest/v1/projects.locations.triggers/create
     POST https://eventarc.googleapis.com/v1/{parent=projects/*/locations/*}/triggers
@@ -59,7 +58,7 @@ def create_trigger(event):
                 "value": event['serviceName']
             }        
         ],
-        "serviceAccount": SERVICE_ACCOUNT,
+        "serviceAccount": service_account,
         "destination": {
             'cloudRun': {
                 'service': event['destinationRunService'],
@@ -89,10 +88,12 @@ def create_eventarc_triggers():
     """
     Create a new trigger in a particular project and location.
     """
-    events = get_eventarc_detail()
+    data = get_eventarc_detail()
+    events = data['events']
+    service_account = data['service_account'][0]
 
     # TODO: 因為應該會有很多 events (初期有 5 個)，因此應要做成非同步的，呼叫完此 API 後就導向狀態頁面看進度
-    results = [create_trigger(e) for e in events]
+    results = [create_trigger(e, service_account) for e in events]
     print(results)
 
     return "success"

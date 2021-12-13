@@ -30,4 +30,4 @@ def get_service_account(project_id):
             "Content-Type": "application/json; charset=utf-8"}
     response = requests.get(api_path, headers=headers)
     print("Service account:", response.status_code, response.text)
-    return response.json()
+    return response.text

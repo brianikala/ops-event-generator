@@ -13,7 +13,7 @@ def get_project_id():
         return project_id
     return ""
 
-def get_service_account():
+def get_default_service_account():
     """
     https://google-auth.readthedocs.io/en/latest/reference/google.auth.html
     If the application is running in Compute Engine or Cloud Run or the App Engine flexible environment
@@ -32,7 +32,7 @@ def get_service_account():
     email = ""
     if hasattr(credentials, "service_account_email"):
         email = credentials.service_account_email
-        print("Service account:", email)
+        print("Default service account:", email)
     else:
         print("WARNING: no service account credential. User account credential?")
 
