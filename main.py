@@ -2,7 +2,7 @@ import os
 from flask import Flask
 
 from auth import get_project_id
-from customer_data import get_enabled_events, get_service_account
+from adminrun import get_enabled_events, get_service_account
 
 
 project_id = "cloud-tech-dev-2021" # prod
@@ -33,9 +33,7 @@ def enabled_events():
     https://demeter-xog7tpoz7a-de.a.run.app/enabled_events
     """
     project_id = get_project_id()
-    customer = os.environ.get("CUSTOMER")
-
-    events = get_enabled_events(customer, project_id)
+    events = get_enabled_events(project_id)
     return ''.join(events)
 
 @app.route("/service_account")
@@ -46,8 +44,7 @@ def service_account():
     https://demeter-xog7tpoz7a-de.a.run.app/service_account
     """    
     project_id = get_project_id()
-    customer = os.environ.get("CUSTOMER")
-    service_account = get_service_account(customer, project_id)
+    service_account = get_service_account(project_id)
     return service_account
 
 #### ↑ DEVELOPEMENT ONLY ↑ ####

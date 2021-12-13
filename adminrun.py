@@ -1,13 +1,16 @@
-import requests
+import os, requests
 from google.auth.transport.requests import Request
 from google.oauth2 import id_token
 
-URL = 'https://a-admin-i7wsmqzjha-de.a.run.app'
+CUSTOMER = os.environ.get("CUSTOMER")
+URL = f'https://{CUSTOMER}-admin-i7wsmqzjha-de.a.run.app'
 
 # TODO: modulized same parts
 
-def get_enabled_events(customer, project_id):
-    api_path = f"{URL}/api/bq/get_enabled_events?customer={customer}&project_id={project_id}"
+def get_enabled_events(project_id):
+    if CUSTOMER == None or project_id == None: return None
+
+    api_path = f"{URL}/api/bq/get_enabled_events?customer={CUSTOMER}&project_id={project_id}"
     auth_req = Request()
     identity_token = id_token.fetch_id_token(auth_req, api_path)
     headers = {'Authorization': 'Bearer ' + identity_token,
@@ -16,8 +19,10 @@ def get_enabled_events(customer, project_id):
     print("Enabled events:", response.status_code, response.text)
     return response.text
 
-def get_service_account(customer, project_id):
-    api_path = f"{URL}/api/bq/get_service_account?customer={customer}&project_id={project_id}"
+def get_service_account(project_id):
+    if CUSTOMER == None or project_id == None: return None
+
+    api_path = f"{URL}/api/bq/get_service_account?customer={CUSTOMER}&project_id={project_id}"
     auth_req = Request()
     identity_token = id_token.fetch_id_token(auth_req, api_path)
     headers = {'Authorization': 'Bearer ' + identity_token,
