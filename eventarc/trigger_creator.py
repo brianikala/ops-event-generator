@@ -105,7 +105,6 @@ def create_trigger(event):
     print(f"Trigger {event['trigger']} creation", chalk.green("success"))
     return 'success'
         
-    
 def create_eventarc_triggers():
     """
     Create a new trigger in a particular project and location.
@@ -117,12 +116,21 @@ def create_eventarc_triggers():
 
     return "success"
 
+def delete_trigger(event):
+    return None
+
 
 ### ROUTE MAPS ###
 app.add_url_rule('/module1', endpoint="module1", view_func=hello_world, methods=["GET"])
 app.add_url_rule(
     '/create/eventarc/triggers',
-    endpoint="/create/eventarc/triggers",
+    endpoint='/create/eventarc/triggers',
     view_func=create_eventarc_triggers,
-    methods=["GET"]
+    methods=['GET']
+)
+app.add_url_rule(
+    '/delete/eventarc/trigger/<event_name>',
+    endpoint='/delete/eventarc/trigger/',
+    view_func=delete_trigger,
+    methods=['GET']
 )
