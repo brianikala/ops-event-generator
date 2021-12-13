@@ -1,4 +1,5 @@
-import os, requests
+import requests
+
 from google.auth.transport.requests import Request
 from google.oauth2 import id_token
 
@@ -17,7 +18,7 @@ def get_enabled_events(project_id):
                 "Content-Type": "application/json; charset=utf-8"}
     response = requests.get(api_path, headers=headers)
     print("Enabled events:", response.status_code, response.text)
-    return response.text
+    return response.json()
 
 def get_service_account(project_id):
     if CUSTOMER == None or project_id == None: return None
@@ -29,4 +30,4 @@ def get_service_account(project_id):
             "Content-Type": "application/json; charset=utf-8"}
     response = requests.get(api_path, headers=headers)
     print("Service account:", response.status_code, response.text)
-    return response.text
+    return response.json()

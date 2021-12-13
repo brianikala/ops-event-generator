@@ -14,34 +14,9 @@ CREDENTIAL, PROJECT_ID = default(scopes=["https://www.googleapis.com/auth/cloud-
 def hello_world():
     return "eventarc/hanlders/trigger_creator"
 
-# TODO: access ER BQ table Projects.methodNames by accessing API of Admin run
+# access ER BQ table Projects.methodNames by accessing API of Admin run
 def get_eventarc_detail():
-    events = get_enabled_events(PROJECT_ID)
-    if events:
-        pp(events)
-    # TMP
-    # events = [{
-    #     'trigger': 'cloud-resource-manager-SetIamPolicy', # CHANGED
-    #     'location': 'global',
-    #     'destination-run-service': 'demeter',
-    #     'destination-run-region': 'asia-east1',
-    #     'destination-run-path': '/SetIamPolicy', # CHANGED
-    #     'type': 'google.cloud.audit.log.v1.written',
-    #     'serviceName': 'cloudresourcemanager.googleapis.com',
-    #     'methodName': 'SetIamPolicy', # CHANGED
-    #     'service-account': '1097778675156-compute@developer.gserviceaccount.com' # default service account
-    # },{
-    #     'trigger': 'cloud-resource-manager-GetIamPolicy', # CHANGED
-    #     'location': 'global',
-    #     'destination-run-service': 'demeter',
-    #     'destination-run-region': 'asia-east1',
-    #     'destination-run-path': '/GetIamPolicy', # CHANGED
-    #     'type': 'google.cloud.audit.log.v1.written',
-    #     'serviceName': 'cloudresourcemanager.googleapis.com',
-    #     'methodName': 'GetIamPolicy', # CHANGED
-    #     'service-account': '1097778675156-compute@developer.gserviceaccount.com' # default service account
-    # }]
-
+    events = get_enabled_events(PROJECT_ID)['events']
     return events
 
 def create_trigger(event):
@@ -113,10 +88,9 @@ def create_eventarc_triggers():
     Create a new trigger in a particular project and location.
     """
     events = get_eventarc_detail()
-    pp(events)
 
     # TODO: 因為應該會有很多 events (初期有 5 個)，因此應要做成非同步的，呼叫完此 API 後就導向狀態頁面看進度
-    # results = [create_trigger(e) for e in events]
+    results = [create_trigger(e) for e in events]
 
     return "success"
 
