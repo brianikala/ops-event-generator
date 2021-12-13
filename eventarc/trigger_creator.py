@@ -9,7 +9,9 @@ from google.auth import default
 
 from adminrun import get_enabled_events
 
+# FIXME: 不是 GCP 的 EG project 怎麼辦？
 CREDENTIAL, PROJECT_ID = default(scopes=["https://www.googleapis.com/auth/cloud-platform"])
+SERVICE_ACCOUNT = f"{PROJECT_ID}-compute@developer.gserviceaccount.com"
 
 def hello_world():
     return "eventarc/hanlders/trigger_creator"
@@ -57,7 +59,7 @@ def create_trigger(event):
                 "value": event['serviceName']
             }        
         ],
-        "serviceAccount": event['serviceAccount'],
+        "serviceAccount": SERVICE_ACCOUNT,
         "destination": {
             'cloudRun': {
                 'service': event['destinationRunService'],
@@ -91,6 +93,7 @@ def create_eventarc_triggers():
 
     # TODO: 因為應該會有很多 events (初期有 5 個)，因此應要做成非同步的，呼叫完此 API 後就導向狀態頁面看進度
     results = [create_trigger(e) for e in events]
+    print(results)
 
     return "success"
 
