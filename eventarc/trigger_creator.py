@@ -1,13 +1,11 @@
 
-import os, requests
+import requests
 
 from yachalk import chalk
 from pprint import pprint as pp
 
 from google.auth.transport import requests as reqs
 from google.auth import default
-
-from __main__ import app
 
 from adminrun import get_enabled_events
 
@@ -124,19 +122,3 @@ def create_eventarc_triggers():
 
 def delete_trigger(event):
     return None
-
-
-### ROUTE MAPS ###
-app.add_url_rule('/module1', endpoint="module1", view_func=hello_world, methods=["GET"])
-app.add_url_rule(
-    '/create/eventarc/triggers',
-    endpoint='/create/eventarc/triggers',
-    view_func=create_eventarc_triggers,
-    methods=['GET']
-)
-app.add_url_rule(
-    '/delete/eventarc/trigger/<event_name>',
-    endpoint='/delete/eventarc/trigger/',
-    view_func=delete_trigger,
-    methods=['GET']
-)

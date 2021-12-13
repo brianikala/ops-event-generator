@@ -10,16 +10,35 @@ topic_id = os.environ.get("TOPIC_ID")
 
 app = Flask(__name__)
 
-# Route Maps
+#### ↓ ROUTE MAPS ↓ ####
 from eventarc import trigger_creator
 from eventarc.handlers import gcp_generic
 
-# NEEDLESS. DEFINE RULES IN VIEW FILES SEPEARATELY
-# app.add_url_rule('/user/<username>', view_func=views.user)
-# app.add_url_rule('/eventarc/trigger/creator', endpoint='index', view_func=trigger_creator.hello_world)
+app.add_url_rule('/module1', endpoint="module1", view_func=trigger_creator.hello_world, methods=["GET"])
+app.add_url_rule(
+    '/create/eventarc/triggers',
+    endpoint='/create/eventarc/triggers',
+    view_func=trigger_creator.create_eventarc_triggers,
+    methods=['GET']
+)
+app.add_url_rule(
+    '/delete/eventarc/trigger/<event_name>',
+    endpoint='/delete/eventarc/trigger/',
+    view_func=trigger_creator.delete_trigger,
+    methods=['GET']
+)
 
+app.add_url_rule('/module2', endpoint="module2", view_func=gcp_generic.hello_world, methods=["GET"])
+app.add_url_rule(
+    '/eventarc/handler/gcp/<event_name>',
+    endpoint="/eventarc/handler/gcp",
+    view_func=gcp_generic.event_dispatcher,
+    methods=["GET"]
+)
 
-#### ↓ DEVELOPEMENT ONLY ↓ ####
+#### ↑ ROUTE MAPS ↑ ####
+
+###↓ DEVELOPEMENT ONLY ↓ ####
 
 @app.route("/")
 def hello_world():

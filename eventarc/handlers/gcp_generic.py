@@ -3,11 +3,7 @@ import json
 
 from flask import request
 
-from __main__ import app
-
 from google.cloud import pubsub_v1
-
-from main import hello_world
 
 project_id = "cloud-tech-dev-2021" # prod
 topic_id = os.environ.get("TOPIC_ID")
@@ -79,13 +75,3 @@ def eventarc_generic_handler():
     except:
         print("Unexpected error:", sys.exc_info()[0])
         return ("Server Error", 502)
-
-
-### ROUTE MAPS ###
-app.add_url_rule('/module2', endpoint="module2", view_func=hello_world, methods=["GET"])
-app.add_url_rule(
-    '/eventarc/handler/gcp/<event_name>',
-    endpoint="/eventarc/handler/gcp",
-    view_func=event_dispatcher,
-    methods=["GET"]
-)
