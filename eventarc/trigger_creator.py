@@ -98,5 +98,18 @@ def create_eventarc_triggers():
 
     return "success"
 
-def delete_trigger(event):
-    return None
+def delete_trigger(trigger_id):
+    """
+    https://cloud.google.com/eventarc/docs/reference/rest/v1/projects.locations.triggers/delete
+    DELETE https://eventarc.googleapis.com/v1/{name=projects/*/locations/*/triggers/*}    
+    """
+    auth_req = reqs.Request()
+    CREDENTIAL.refresh(auth_req)
+    token = CREDENTIAL.token
+    header = {'Authorization': f"Bearer {token}"}
+    query_params = "validateOnly=False"
+    api_url = f"https://eventarc.googleapis.com/v1/projects/{PROJECT_ID}/locations/global/triggers/{trigger_id}?{query_params}"
+    response = requests.delete(api_url, headers=header)
+    result = response.json()
+    pp(result)
+    return "done"
