@@ -83,10 +83,15 @@ def create_trigger(event, service_account):
     pp(result)
     print(f"Trigger {event['trigger']} creation", chalk.green("success"))
     return 'success'
-        
+
+# 這個是建立 provisioned 的五個      
 def create_eventarc_triggers():
     """
     Create a new trigger in a particular project and location.
+
+    [TEST]
+    curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
+    https://demeter-xog7tpoz7a-de.a.run.app/create/eventarc/triggers
     """
     data = get_eventarc_detail()
     events = data['events']
@@ -98,5 +103,22 @@ def create_eventarc_triggers():
 
     return "success"
 
-def delete_trigger(event):
-    return None
+def delete_trigger(trigger_id):
+    """
+    https://cloud.google.com/eventarc/docs/reference/rest/v1/projects.locations.triggers/delete
+    DELETE https://eventarc.googleapis.com/v1/{name=projects/*/locations/*/triggers/*} 
+
+    [TEST]
+    curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
+    -X DELETE https://demeter-xog7tpoz7a-de.a.run.app/delete/eventarc/trigger/compute-firewall-delete   
+    """
+    auth_req = reqs.Request()
+    CREDENTIAL.refresh(auth_req)
+    token = CREDENTIAL.token
+    header = {'Authorization': f"Bearer {token}"}
+    query_params = "validateOnly=False"
+    api_url = f"https://eventarc.googleapis.com/v1/projects/{PROJECT_ID}/locations/global/triggers/{trigger_id}?{query_params}"
+    response = requests.delete(api_url, headers=header)
+    result = response.json()
+    pp(result)
+    return "done"

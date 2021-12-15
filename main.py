@@ -22,10 +22,10 @@ app.add_url_rule(
     methods=['GET']
 )
 app.add_url_rule(
-    '/delete/eventarc/trigger/<event_name>',
+    '/delete/eventarc/trigger/<trigger_id>',
     endpoint='/delete/eventarc/trigger/',
     view_func=trigger_creator.delete_trigger,
-    methods=['GET']
+    methods=['DELETE']
 )
 
 app.add_url_rule('/module2', endpoint="module2", view_func=gcp_generic.hello_world, methods=["GET"])
