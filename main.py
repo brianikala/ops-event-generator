@@ -22,9 +22,15 @@ app.add_url_rule(
     methods=['GET']
 )
 app.add_url_rule(
+    '/create/eventarc/trigger',
+    endpoint='/create/eventarc/trigger',
+    view_func=trigger_creator.create_eventarc_trigger,
+    methods=['POST']
+)
+app.add_url_rule(
     '/delete/eventarc/trigger/<trigger_id>',
     endpoint='/delete/eventarc/trigger/',
-    view_func=trigger_creator.delete_trigger,
+    view_func=trigger_creator.delete_eventarc_trigger,
     methods=['DELETE']
 )
 

@@ -9,6 +9,8 @@ from google.auth import default
 
 from adminrun import get_enabled_events
 
+from flask import request
+
 # FIXME: 不是 GCP 的 EG project 怎麼辦？
 CREDENTIAL, PROJECT_ID = default(scopes=["https://www.googleapis.com/auth/cloud-platform"])
 
@@ -22,20 +24,35 @@ def get_eventarc_detail():
 
 def create_trigger(event, service_account):
     """
-    https://cloud.google.com/eventarc/docs/reference/rest/v1/projects.locations.triggers/create
-    POST https://eventarc.googleapis.com/v1/{parent=projects/*/locations/*}/triggers
+        [Sample event object]
+        {
+            "trigger": "cloud-resource-manager-set-iam-policy",
+            "destinationRunService": "demeter",
+            "destinationRunRegion": "asia-east1",
+            "destinationRunPath": "/eventarc/handler/gcp/SetIamPolicy",
+            "methodName": "SetIamPolicy",
+            "type": "google.cloud.audit.log.v1.written",
+            "serviceName": "cloudresourcemanager.googleapis.com",
+            "enabled": true
+        }   
 
-    對應的 gcloud command:
-    gcloud eventarc triggers create TRIGGER \
-    --location=global \
-    --destination-run-service=DESTINATION_RUN_SERVICE \
-    --destination-run-region=DESTINATION_RUN_REGION \
-    --destination-run-path=DESTINATION_RUN_PATH \
-    --event-filters="type=google.cloud.audit.log.v1.written" \
-    --event-filters="serviceName=cloudresourcemanager.googleapis.com" \
-    --event-filters="methodName=SetIamPolicy" \
-    --service-account=1097778675156-compute@developer.gserviceaccount.com
+        [Reference]
+        https://cloud.google.com/eventarc/docs/reference/rest/v1/projects.locations.triggers/create
+        POST https://eventarc.googleapis.com/v1/{parent=projects/*/locations/*}/triggers
+
+        [Metches gcloud command]
+        gcloud eventarc triggers create TRIGGER \
+        --location=global \
+        --destination-run-service=DESTINATION_RUN_SERVICE \
+        --destination-run-region=DESTINATION_RUN_REGION \
+        --destination-run-path=DESTINATION_RUN_PATH \
+        --event-filters="type=google.cloud.audit.log.v1.written" \
+        --event-filters="serviceName=cloudresourcemanager.googleapis.com" \
+        --event-filters="methodName=SetIamPolicy" \
+        --service-account=1097778675156-compute@developer.gserviceaccount.com 
     """
+
+    if event == None or service_account == None: return "failed"
 
     auth_req = reqs.Request()
     CREDENTIAL.refresh(auth_req)
@@ -84,14 +101,19 @@ def create_trigger(event, service_account):
     print(f"Trigger {event['trigger']} creation", chalk.green("success"))
     return 'success'
 
-# 這個是建立 provisioned 的五個      
+
+#### ↓ APIs ↓ ####
+
+ 
 def create_eventarc_triggers():
     """
-    Create a new trigger in a particular project and location.
+        API: GET /create/eventarc/triggers
 
-    [TEST]
-    curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
-    https://demeter-xog7tpoz7a-de.a.run.app/create/eventarc/triggers
+        這個是建立 iKala provisioned 的五個
+        
+        [TEST]
+        curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
+        https://demeter-xog7tpoz7a-de.a.run.app/create/eventarc/triggers
     """
     data = get_eventarc_detail()
     events = data['events']
@@ -99,18 +121,51 @@ def create_eventarc_triggers():
 
     # TODO: 因為應該會有很多 events (初期有 5 個)，因此應要做成非同步的，呼叫完此 API 後就導向狀態頁面看進度
     results = [create_trigger(e, service_account) for e in events]
-    print(results)
+    pp(results)
 
     return "success"
 
-def delete_trigger(trigger_id):
+def create_eventarc_trigger():
     """
-    https://cloud.google.com/eventarc/docs/reference/rest/v1/projects.locations.triggers/delete
-    DELETE https://eventarc.googleapis.com/v1/{name=projects/*/locations/*/triggers/*} 
+        API: POST /create/eventarc/trigger
 
-    [TEST]
-    curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
-    -X DELETE https://demeter-xog7tpoz7a-de.a.run.app/delete/eventarc/trigger/compute-firewall-delete   
+        Create a new trigger in a particular project and location.
+
+        [Sample Body]
+        Content-Type: application/json
+        {
+            "event": 	{
+                "trigger": "cloud-resource-manager-set-iam-policy",
+                "destinationRunService": "demeter",
+                "destinationRunRegion": "asia-east1",
+                "destinationRunPath": "/eventarc/handler/gcp/SetIamPolicy",
+                "methodName": "SetIamPolicy",
+                "type": "google.cloud.audit.log.v1.written",
+                "serviceName": "cloudresourcemanager.googleapis.com",
+                "enabled": true
+            },
+            "service_account": "1097778675156-compute@developer.gserviceaccount.com"
+        }
+    """
+    body = request.json
+    service_account = body['service_account']
+    event = body['event']
+    result = create_trigger(event, service_account)
+    pp(result)
+    return "success"
+
+
+def delete_eventarc_trigger(trigger_id):
+    """
+        API: DELETE /delete/eventarc/trigger/<trigger_id>
+
+        [Reference]
+        https://cloud.google.com/eventarc/docs/reference/rest/v1/projects.locations.triggers/delete
+        DELETE https://eventarc.googleapis.com/v1/{name=projects/*/locations/*/triggers/*} 
+
+        [TEST]
+        curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
+        -X DELETE https://demeter-xog7tpoz7a-de.a.run.app/delete/eventarc/trigger/compute-firewall-delete   
     """
     auth_req = reqs.Request()
     CREDENTIAL.refresh(auth_req)
@@ -122,3 +177,5 @@ def delete_trigger(trigger_id):
     result = response.json()
     pp(result)
     return "done"
+
+#### ↑ APIs ↑ ####
