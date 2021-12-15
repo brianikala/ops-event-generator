@@ -33,7 +33,7 @@ app.add_url_rule(
     '/eventarc/handler/gcp/<event_name>',
     endpoint="/eventarc/handler/gcp",
     view_func=gcp_generic.event_dispatcher,
-    methods=["GET"]
+    methods=["POST"]
 )
 
 #### ↑ ROUTE MAPS ↑ ####

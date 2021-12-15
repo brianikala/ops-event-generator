@@ -11,11 +11,17 @@ topic_id = os.environ.get("TOPIC_ID")
 def hello_world():
     return "eventarc/handlers/gcp_generic"
 
-# NOTE: 現在是每個 event 都會呼叫同一個 handler，之後如果有針對不同 event 要有客製化的 handler 就加入此
 def event_dispatcher(event_name):
+    """
+    NOTE: 現在是每個 event 都會呼叫同一個 handler，之後如果有針對不同 event 要有客製化的 handler 就加入此
+    """
     print(event_name)
     handler = {
-        "SetIamPolicy": eventarc_generic_handler
+        "SetIamPolicy": eventarc_generic_handler,
+        "SetOrgPolicy": eventarc_generic_handler,
+        "v1.compute.firewalls.insert": eventarc_generic_handler,
+        "v1.compute.firewalls.patch": eventarc_generic_handler,
+        "v1.compute.firewalls.delete": eventarc_generic_handler
     }
 
     handler[event_name]()
