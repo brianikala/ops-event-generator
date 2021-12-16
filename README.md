@@ -13,8 +13,7 @@ This project is for iKala AIOps project - Event Generator part.
 ### Install
 
 1. Open a cloud shell in your GCP console
-2. Clone project with `git clone https://github.com/iKala-Cloud/ops-event-generator.git`
-3. Move into the project folder `cd ops-event-generator`
+2. `curl -L https://raw.githubusercontent.com/iKala-Cloud/ops-event-generator/master/install.sh | bash`
 
 ## Architecture
 
