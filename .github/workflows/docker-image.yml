@@ -1,0 +1,48 @@
+name: demeter-docker-image-ci
+
+on:
+  push:
+    branches: [ master, feature\/*, hotfix\/* ]
+    # branches: [ master, feature\/*, hotfix\/* ] # move to another workflow
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    # Setup gcloud CLI
+    # https://github.com/google-github-actions/setup-gcloud
+    - uses: google-github-actions/setup-gcloud@master
+      with:
+        version: '286.0.0'
+        service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        export_default_credentials: true
+        
+    # Print gcloud info
+    - name: Info
+      run: gcloud info
+
+#     # Build and push image to Google Container Registry
+#     - name: Build
+#       run: |-
+#         gcloud builds submit \
+#           --quiet \
+#           --tag "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA"
+#     # Deploy image to Cloud Run
+#     - name: Deploy
+#       run: |-
+#         gcloud run deploy "$SERVICE_NAME" \
+#           --quiet \
+#           --region "$RUN_REGION" \
+#           --image "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" \
+#           --platform "managed" \
+#           --port 80 \
+#           --allow-unauthenticated

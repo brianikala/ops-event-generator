@@ -1,5 +1,7 @@
 # Ops Event Generator (Demeter)
 
+[![demeter-docker-image-ci](https://github.com/iKala-Cloud/ops-event-generator/actions/workflows/docker-image.yml/badge.svg)](https://github.com/iKala-Cloud/ops-event-generator/actions/workflows/docker-image.yml)
+
 This project is for iKala AIOps project - Event Generator part.
 
 ## Detail
@@ -13,7 +15,7 @@ This project is for iKala AIOps project - Event Generator part.
 ### Install
 
 1. Open a cloud shell in your GCP console
-2. `curl -L https://raw.githubusercontent.com/iKala-Cloud/ops-event-generator/master/install.sh | bash`
+2. `source <(curl -s curl -sL https://raw.githubusercontent.com/iKala-Cloud/ops-event-generator/master/install.sh)`
 
 ## Architecture
 
