@@ -1,4 +1,4 @@
-# Demeter (WIP)
+# Ops Event Generator (Demeter)
 
 This project is for iKala AIOps project - Event Generator part.
 
@@ -7,6 +7,13 @@ This project is for iKala AIOps project - Event Generator part.
 [Project description](https://gcp.corp.ikala.tv/projects/gcp/wiki/Progress_MVP)
 
 ![](img/arch_eg.png)
+
+## Quickstart
+
+### Install
+
+1. Open a cloud shell in your GCP console
+2. `curl -L https://raw.githubusercontent.com/iKala-Cloud/ops-event-generator/master/install.sh | bash`
 
 ## Architecture
 
