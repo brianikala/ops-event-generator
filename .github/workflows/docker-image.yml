@@ -2,10 +2,14 @@ name: demeter-docker-image-ci
 
 on:
   push:
-    branches: [ master, feature\/*, hotfix\/* ]
-    # branches: [ master, feature\/*, hotfix\/* ] # move to another workflow
-  pull_request:
     branches: [ master ]
+  #   branches: [ master, feature-/*, hotfix-/* ] # move to another workflow
+  # pull_request: # move to another workflow
+  #   branches: [ master, feature-/*, hotfix-/* ] # move to another workflow
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  SERVICE_NAME: demeter
+  RUN_REGION: asia-east1
 
 jobs:
 
@@ -30,19 +34,10 @@ jobs:
     - name: Info
       run: gcloud info
 
-#     # Build and push image to Google Container Registry
-#     - name: Build
-#       run: |-
-#         gcloud builds submit \
-#           --quiet \
-#           --tag "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA"
-#     # Deploy image to Cloud Run
-#     - name: Deploy
-#       run: |-
-#         gcloud run deploy "$SERVICE_NAME" \
-#           --quiet \
-#           --region "$RUN_REGION" \
-#           --image "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" \
-#           --platform "managed" \
-#           --port 80 \
-#           --allow-unauthenticated
+    # Build and push image to Google Container Registry
+    - name: Build
+      run: |-
+        gcloud builds submit \
+          --quiet \
+          --tag "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA"
+
