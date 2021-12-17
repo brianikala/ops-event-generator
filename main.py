@@ -1,7 +1,8 @@
 import os
 import json
-from flask import Flask, Blueprint, render_template
+from flask import Flask
 from flask_apscheduler import APScheduler
+from flask_bootstrap import Bootstrap
 
 from auth import get_project_id
 from adminrun import get_enabled_events, get_service_account
@@ -14,7 +15,7 @@ project_id = "cloud-tech-dev-2021" # prod
 topic_id = os.environ.get("TOPIC_ID")
 
 app = Flask(__name__)
-
+Bootstrap(app)
 app.register_blueprint(dashboard)
 
 #### ↓ DEVELOPMENT ↓ ####
