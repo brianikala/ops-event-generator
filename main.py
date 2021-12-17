@@ -42,6 +42,13 @@ app.add_url_rule(
     view_func=gcp_generic.event_dispatcher,
     methods=["POST"]
 )
+app.add_url_rule(
+    '/update/eventarc/trigger',
+    endpoint="/update/eventarc/trigger",
+    view_func=trigger_creator.update_triggers,
+    methods=["POST"]
+)
+
 
 #### ↑ ROUTE MAPS ↑ ####
 

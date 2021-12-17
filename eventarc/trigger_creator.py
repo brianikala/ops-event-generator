@@ -1,5 +1,6 @@
 
 import requests
+import json
 
 from yachalk import chalk
 from pprint import pprint as pp
@@ -103,6 +104,26 @@ def create_trigger(event, service_account):
     print(f"Trigger {event['trigger']} creation", chalk.green("success"))
     return 'success'
 
+def get_triggers():
+    api_url = f"https://eventarc.googleapis.com/v1/projects/{PROJECT_ID}/locations/{REGION}/triggers"
+    auth_req = reqs.Request()
+    CREDENTIAL.refresh(auth_req)
+    token = CREDENTIAL.token
+    header = {'Authorization': f"Bearer {token}"}
+    response = requests.get(api_url, headers=header)
+    data = response.json()
+    if 'triggers' not in data:
+        return []
+    result = [
+        {
+            'id': trigger['name'].split('/')[-1],
+            'methodName': event_filter['value'],
+        }
+        for trigger in data['triggers']
+        for event_filter in trigger['eventFilters']
+        if event_filter['attribute'] == 'methodName'
+    ]
+    return result
 
 #### ↓ APIs ↓ ####
 
@@ -178,6 +199,34 @@ def delete_eventarc_trigger(trigger_id):
     response = requests.delete(api_url, headers=header)
     result = response.json()
     pp(result)
+    return "done"
+
+def update_triggers():
+    eventarc_detail = get_eventarc_detail()
+    events = eventarc_detail['events']
+    service_account = eventarc_detail['service_account'][0]
+    event_methods = [event['methodName'] for event in events]
+    triggers = get_triggers()
+    trigger_methods = [trigger['methodName'] for trigger in triggers]
+    events_to_create = [
+        event
+        for event in events
+        if event['methodName'] not in trigger_methods
+    ]
+    triggers_to_delete = [
+        trigger['id']
+        for trigger in triggers
+        if trigger['methodName'] not in event_methods
+    ]
+    # TODO: async creation and deletion
+    print(json.dumps({
+        'severity': 'INFO',
+        'message': f"Update eventarc triggers, {len(events_to_create)} events to create, {len(triggers_to_delete)} triggers to delete",
+        'events_to_create': events_to_create,
+        'triggers_to_delete': triggers_to_delete,
+    }))
+    creation_result = [create_trigger(event, service_account) for event in events_to_create]
+    deletion_result = [delete_eventarc_trigger(trigger_id) for trigger_id in triggers_to_delete]
     return "done"
 
 #### ↑ APIs ↑ ####
