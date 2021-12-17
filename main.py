@@ -1,6 +1,6 @@
 import os
 import json
-from flask import Flask
+from flask import Flask, Blueprint, render_template
 from flask_apscheduler import APScheduler
 
 from auth import get_project_id
@@ -8,10 +8,14 @@ from adminrun import get_enabled_events, get_service_account
 from eventarc import trigger_creator
 from eventarc.handlers import gcp_generic
 
+from views.dashboard import dashboard
+
 project_id = "cloud-tech-dev-2021" # prod
 topic_id = os.environ.get("TOPIC_ID")
 
 app = Flask(__name__)
+
+app.register_blueprint(dashboard)
 
 #### ↓ DEVELOPMENT ↓ ####
 
