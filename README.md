@@ -44,7 +44,7 @@ The roles for service account that contain permissions to receive message from e
 ```shell
 $ gcloud config set project customer-a-project-1
 
-$ gcloud run deploy demeter --region=asia-east1 --set-env-vars TOPIC_ID=<ER PUB/SUB TOPIC ID FOR EG PROJECT> --set-env-vars CUSTIOMER=<CUSTOMER NAME> --source=.
+$ gcloud run deploy demeter --region=asia-east1 --set-env-vars TOPIC_ID=<ER PUB/SUB TOPIC ID FOR EG PROJECT> --set-env-vars CUSTOMER=<CUSTOMER NAME> --source=.
 ```
 Then wait a few moments until the deployment is complete. On success, the command line displays the service URL.
 
