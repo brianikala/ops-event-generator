@@ -18,7 +18,9 @@ def get_enabled_events(project_id):
                 "Content-Type": "application/json; charset=utf-8"}
     response = requests.get(api_path, headers=headers)
     print("Enabled events:", response.status_code, response.text)
-    return response.json()
+    result = response.json()
+    result['events'] = [event for event in result['events'] if event['enabled']]
+    return result
 
 def get_service_account(project_id):
     if CUSTOMER == None or project_id == None: return None
