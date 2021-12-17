@@ -12,25 +12,45 @@
   This will keep scripts at the page end and a navbar you add on later
   intact. #}
 {% block content %}
- <div class="container">
- {%- with messages = get_flashed_messages(with_categories=True) %}
- {%- if messages %}
-   <div class="row">
-     <div class="col-md-12">
-       {{utils.flashed_messages(messages)}}
-     </div>
-   </div>
- {%- endif %}
- {%- endwith %}
-   <div class="jumbotron">
-     <h1>Welcome to Flask-Bootstrap</h1>
-     <p>This example application demonstrates some (but not all!) of the
-     features of <a href="http://pythonhosted.org/Flask-Bootstrap">
-     Flask-Bootstrap</a>.</p>
-     <p>
-       <a class="btn btn-lg btn-default" role="button"
-          href="http://pythonhosted.org/Flask-Bootstrap" >Show docs</a>
-     </p>
-   </div>
+<div class="col-md-3"></div>
+<div class="col-md-6">
+  <div class="page-header">
+    <h1>Ops Event Generator <small>powered by iKala Cloud</small></h1>
   </div>
+  <div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading panel-success">Service Status</div>
+  
+    <!-- Table -->
+    <table class="table">
+      <thead>
+        <th>Service</th>
+        <th>Status</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Pub/Sub</td>
+          {% if pubsub_status == "up" %}
+          <td>🟢</td>
+          {% elsif pubsub_status == "down" %}
+          <td>🔴 🟡</td>
+          {% else %}
+          <td>🔴 🟡</td>
+          {% endif %}
+        </tr>
+        <tr>
+          <td>ER API</td>
+          {% if er_status == "up" %}
+          <td>🟢</td>
+          {% elsif er_status == "down" %}
+          <td>🔴 🟡</td>
+          {% else %}
+          <td>🔴 🟡</td>
+          {% endif %}
+        </tr>
+      </tbody>
+    </table>
+  </div>  
+</div> 
+<div class="col-md-3"></div>
 {%- endblock %}
