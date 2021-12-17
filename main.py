@@ -1,4 +1,5 @@
 import os
+import json
 from flask import Flask
 
 from auth import get_project_id
@@ -59,7 +60,8 @@ def enabled_events():
     """
     project_id = get_project_id()
     events = get_enabled_events(project_id)
-    return ''.join(events)
+    print(json.dumps(events))
+    return json.dumps(events)
 
 @app.route("/service_account")
 def service_account():
