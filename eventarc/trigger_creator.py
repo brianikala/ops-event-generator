@@ -14,6 +14,8 @@ from flask import request
 # FIXME: 不是 GCP 的 EG project 怎麼辦？
 CREDENTIAL, PROJECT_ID = default(scopes=["https://www.googleapis.com/auth/cloud-platform"])
 
+REGION = 'global'
+
 def hello_world():
     return "eventarc/hanlders/trigger_creator"
 
@@ -60,7 +62,7 @@ def create_trigger(event, service_account):
     header = {'Authorization': f"Bearer {token}"}
 
     data = {
-        "name": f"projects/{PROJECT_ID}/locations/global/triggers/{event['trigger']}",
+        "name": f"projects/{PROJECT_ID}/locations/{REGION}/triggers/{event['trigger']}",
         "eventFilters": [
             {
                 "attribute": "methodName",
@@ -88,7 +90,7 @@ def create_trigger(event, service_account):
     pp(data)
     trigger_id = event['trigger'].lower()
     query_params = f"triggerId={trigger_id}&validateOnly=False"
-    api_url = f"https://eventarc.googleapis.com/v1/projects/{PROJECT_ID}/locations/global/triggers?{query_params}"
+    api_url = f"https://eventarc.googleapis.com/v1/projects/{PROJECT_ID}/locations/{REGION}/triggers?{query_params}"
 
     response = requests.post(api_url, headers=header, json=data)
     result = response.json()
@@ -172,7 +174,7 @@ def delete_eventarc_trigger(trigger_id):
     token = CREDENTIAL.token
     header = {'Authorization': f"Bearer {token}"}
     query_params = "validateOnly=False"
-    api_url = f"https://eventarc.googleapis.com/v1/projects/{PROJECT_ID}/locations/global/triggers/{trigger_id}?{query_params}"
+    api_url = f"https://eventarc.googleapis.com/v1/projects/{PROJECT_ID}/locations/{REGION}/triggers/{trigger_id}?{query_params}"
     response = requests.delete(api_url, headers=header)
     result = response.json()
     pp(result)
