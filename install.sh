@@ -62,6 +62,7 @@ fi
 # run gcloud command
 gcloud run deploy demeter --region=asia-east1 --no-allow-unauthenticated \
     --image=gcr.io/cloud-tech-dev-2021/demeter:latest \
+    --min-instances=1 \
     --set-env-vars TOPIC_ID=$TOPIC_ID \
     --set-env-vars CUSTOMER=$CUSTOMER
 

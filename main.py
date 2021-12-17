@@ -1,19 +1,46 @@
 import os
 import json
 from flask import Flask
+from flask_apscheduler import APScheduler
 
 from auth import get_project_id
 from adminrun import get_enabled_events, get_service_account
-
+from eventarc import trigger_creator
+from eventarc.handlers import gcp_generic
 
 project_id = "cloud-tech-dev-2021" # prod
 topic_id = os.environ.get("TOPIC_ID")
 
 app = Flask(__name__)
 
+#### ↓ DEVELOPMENT ↓ ####
+
+class Config:
+    SCHEDULER_API_ENABLED = True
+app.config.from_object(Config())
+
+#### ↑ DEVELOPMENT ↑ ####
+
+# initialize scheduler
+scheduler = APScheduler()
+scheduler.init_app(app)
+
+#### ↓ SCHEDULERS ↓ ####
+
+# Run at 00:00, 04:00, 08:00 ~ 20:00, every day
+@scheduler.task('cron', id='update_eventarc_triggers', hour="*/4")
+def update_eventarc_triggers():
+    print(json.dumps({
+        'severity': 'INFO',
+        'message': "Start to update eventarc triggers",
+    }))
+    trigger_creator.update_triggers()
+
+scheduler.start()
+
+#### ↑ SCHEDULERS ↑ ####
+
 #### ↓ ROUTE MAPS ↓ ####
-from eventarc import trigger_creator
-from eventarc.handlers import gcp_generic
 
 app.add_url_rule('/module1', endpoint="module1", view_func=trigger_creator.hello_world, methods=["GET"])
 app.add_url_rule(
