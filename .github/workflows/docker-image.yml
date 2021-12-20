@@ -26,7 +26,13 @@ jobs:
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
       if: always() # Pick up events even if the job fails or is canceled.
-    
+
+    # - id: auth
+    #   uses: google-github-actions/auth@v0
+    #   with:
+    #     workload_identity_provider: 'projects/cloud-tech-dev-2021/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
+    #     service_account: 'demeter-github-action@cloud-tech-dev-2021.iam.gserviceaccount.com'
+
     # Setup gcloud CLI
     # https://github.com/google-github-actions/setup-gcloud
     - uses: google-github-actions/setup-gcloud@master

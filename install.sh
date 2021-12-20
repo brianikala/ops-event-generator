@@ -66,4 +66,23 @@ gcloud run deploy demeter --region=asia-east1 --no-allow-unauthenticated \
     --set-env-vars TOPIC_ID=$TOPIC_ID \
     --set-env-vars CUSTOMER=$CUSTOMER
 
+# initializations
+# step1: enable eventarc API
+# https://cloud.google.com/endpoints/docs/openapi/enable-api#gcloud
+gcloud config set project $PROJECT_ID
+gcloud services enable eventarc.googleapis.com
+
+# (Maybe) configuration?
+# https://cloud.google.com/eventarc/docs/run/quickstart
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+    --role='roles/eventarc.developer' \
+    --role='roles/eventarc.eventReceiver' \
+    --role='roles/eventarc.serviceAgent'
+
+# step2: create eventarc triggers
+SERVICE_URL=$(gcloud run services describe demeter --region=asia-east1 --format 'value(status.url)')
+curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" "${SERVICE_URL}/create/eventarc/triggers"
+
+
 echo "Installation completed!"
