@@ -90,4 +90,5 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 SERVICE_URL=$(gcloud run services describe demeter --region=asia-east1 --format 'value(status.url)')
 curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" "${SERVICE_URL}/create/eventarc/triggers"
 
+echo
 echo "Installation completed!"
