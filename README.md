@@ -12,6 +12,10 @@ This project is for iKala AIOps project - Event Generator part.
 
 ## Quickstart
 
+### Before you start install
+
+1. Please make sure you had register in ER run. 
+2. Please make sure you have the service account of your EG project be added to cloud-tech-dev-2021.
 ### Install
 
 1. Open a cloud shell in your GCP console
