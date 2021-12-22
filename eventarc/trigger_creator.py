@@ -175,7 +175,7 @@ def create_eventarc_trigger():
     event = body['event']
     result = create_trigger(event, service_account)
     pp(result)
-    return "success"
+    return { "result": result }
 
 
 def delete_eventarc_trigger(trigger_id):

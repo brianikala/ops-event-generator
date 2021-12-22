@@ -88,6 +88,11 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 
 # step3: create eventarc triggers
 SERVICE_URL=$(gcloud run services describe demeter --region=asia-east1 --format 'value(status.url)')
-curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" "${SERVICE_URL}/create/eventarc/triggers"
+res=$(curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" "${SERVICE_URL}/create/eventarc/triggers")
+if [ "$res" != "success" ]; then
+  echo "Failed to create Cloud eventarc triggers: $res"
+  exit 1
+fi
 
+echo
 echo "Installation completed!"
