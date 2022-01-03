@@ -70,14 +70,17 @@ gcloud run deploy demeter --region=asia-east1 --no-allow-unauthenticated \
     --set-env-vars TOPIC_ID=$TOPIC_ID \
     --set-env-vars CUSTOMER=$CUSTOMER
 
-# initializations
-# step1: enable eventarc API
-# https://cloud.google.com/endpoints/docs/openapi/enable-api#gcloud
+##############################################################################
+
+# Initializations
+
+## Step 1: enable eventarc API
+## https://cloud.google.com/endpoints/docs/openapi/enable-api#gcloud
 gcloud config set project $DEVSHELL_PROJECT_ID
 gcloud services enable eventarc.googleapis.com
 
-# step2: configuration permissions
-# https://cloud.google.com/eventarc/docs/run/quickstart
+## Step 2: configuration permissions
+## https://cloud.google.com/eventarc/docs/run/quickstart
 gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID \
     --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
     --role='roles/eventarc.developer'
@@ -90,13 +93,17 @@ gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID \
     --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
     --role='roles/eventarc.serviceAgent'
 
-# step3: create eventarc triggers
+## Step 3: create eventarc triggers
 SERVICE_URL=$(gcloud run services describe demeter --region=asia-east1 --format 'value(status.url)')
-res=$(curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" "${SERVICE_URL}/create/eventarc/triggers")
-if [ "$res" != "success" ]; then
-  echo "Failed to create Cloud eventarc triggers: $res"
-  exit 1
+result=$(curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" "${SERVICE_URL}/create/eventarc/triggers")
+if [ "$result" != "success" ]; then
+  echo "Failed to create Cloud eventarc triggers. Check up the logs of demeter to know more detailed."
+  echo "https://console.cloud.google.com/run/detail/asia-east1/demeter/logs?project=${DEVSHELL_PROJECT_ID}"
+  progress="failed"
 fi
-
+    
 echo
-echo "Installation completed!"
+
+if [ "$progress" == "completed" ]; then
+    echo "Installation completed!"
+fi

@@ -17,15 +17,15 @@ def get_enabled_events(project_id):
     headers = {'Authorization': 'Bearer ' + identity_token,
                 "Content-Type": "application/json; charset=utf-8"}
     response = requests.get(api_path, headers=headers)
-    print("Enabled events:", response.status_code, response.text)
+    print("[adminrun.py/get_enabled_events] Enabled events:", response.status_code, response.text)
     if response.status_code == 200:
         result = response.json()
         result['events'] = [event for event in result['events'] if event['enabled']]
         return result
     elif response.status_code == 404:
-        print("The admin run for this customer does not exist")
+        print("[adminrun.py/get_enabled_events] The admin run for this customer does not exist")
     else:
-        print("No available enabled events of current customer")
+        print("[adminrun.py/get_enabled_events] No available enabled events of current customer")
 
     return {}
 
@@ -38,5 +38,5 @@ def get_service_account(project_id):
     headers = {'Authorization': 'Bearer ' + identity_token,
             "Content-Type": "application/json; charset=utf-8"}
     response = requests.get(api_path, headers=headers)
-    print("Service account:", response.status_code, response.text)
+    print("[adminrun.py/get_service_account] Service account:", response.status_code, response.text)
     return response.text
