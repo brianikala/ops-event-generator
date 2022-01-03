@@ -24,6 +24,8 @@ def get_enabled_events(project_id):
         return result
     elif response.status_code == 404:
         print("[adminrun.py/get_enabled_events] The admin run for this customer does not exist")
+    elif response.status_code == 403:
+        print("[adminrun.py/get_enabled_events] Current service account is not added to request admin run API")
     else:
         print("[adminrun.py/get_enabled_events] No available enabled events of current customer")
 
