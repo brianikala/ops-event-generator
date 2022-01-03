@@ -139,6 +139,9 @@ def create_eventarc_triggers():
         https://demeter-xog7tpoz7a-de.a.run.app/create/eventarc/triggers
     """
     data = get_eventarc_detail()
+    if data == {}:
+        return "failed"
+
     events = data['events']
     service_account = data['service_account'][0]
 
@@ -203,6 +206,9 @@ def delete_eventarc_trigger(trigger_id):
 
 def update_triggers():
     eventarc_detail = get_eventarc_detail()
+    if eventarc_detail == {}:
+        return "error"
+
     events = eventarc_detail['events']
     service_account = eventarc_detail['service_account'][0]
     event_methods = [event['methodName'] for event in events]
