@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# NOTE: This is script is used if gcloud command installing failed.
+####################################################################################
+# NOTE: This is script is used if gcloud command installing failed.                #
+####################################################################################
 
 set -e
 
@@ -22,36 +24,38 @@ read -e -n 100 -p "Please input your name (registered in iKala): " CUSTOMER
 echo "Your input name: ${CUSTOMER}"
 echo
 
+####################################################################################
+# Select project to install EG (DEPRECATED)
+# projectList=()
+# i=0
+# for pList in $(gcloud projects list --format='csv(projectId, projectNumber)')
+# do
+#     IFS=', ' read -r -a list <<< $pList
+#     PID="${list[0]}"
+#     PNO="${list[1]}"
 
-projectList=()
-i=0
-for pList in $(gcloud projects list --format='csv(projectId, projectNumber)')
-do
-    IFS=', ' read -r -a list <<< $pList
-    PID="${list[0]}"
-    PNO="${list[1]}"
-
-    if test $i = 0 ; then
-        printf "\tProject Number\tProject ID\n"
-        echo "--------------------------"
-    else 
-        printf "(%s)\t%s\t%s\n" $i $PNO $PID
-    fi
+#     if test $i = 0 ; then
+#         printf "\tProject Number\tProject ID\n"
+#         echo "--------------------------"
+#     else 
+#         printf "(%s)\t%s\t%s\n" $i $PNO $PID
+#     fi
     
-    projectList+=($PID)
-    ((i=i+1))
-done
-read -e -n 100 -p "Please select the project you want to install the agent: " opt
-echo "You select project ID: ${projectList[$opt]}"
-PROJECT_ID=${projectList[$opt]}
-echo
+#     projectList+=($PID)
+#     ((i=i+1))
+# done
+# read -e -n 100 -p "Please select the project you want to install the agent: " opt
+# echo "You select project ID: ${projectList[$opt]}"
+# PROJECT_ID=${projectList[$opt]}
+# echo
+####################################################################################
 
 echo "Reading project metadata..."
-PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format 'value(projectNumber)')
+PROJECT_NUMBER=$(gcloud projects describe ${DEVSHELL_PROJECT_ID} --format 'value(projectNumber)')
 TOPIC_ID="${CUSTOMER}_${PROJECT_NUMBER}"
 echo
 
-printf "Topic ID:\t%s\nCustomer name:\t%s\nProject ID:\t%s\n\n" $TOPIC_ID $CUSTOMER $PROJECT_ID
+printf "Topic ID:\t%s\nCustomer name:\t%s\nProject ID:\t%s\n\n" $TOPIC_ID $CUSTOMER $DEVSHELL_PROJECT_ID
 echo "Is the configuration correct? (N/y): "
 read -e -n 100 correct
 [ -z "$correct" ] && agree="Y" 
@@ -69,20 +73,20 @@ gcloud run deploy demeter --region=asia-east1 --no-allow-unauthenticated \
 # initializations
 # step1: enable eventarc API
 # https://cloud.google.com/endpoints/docs/openapi/enable-api#gcloud
-gcloud config set project $PROJECT_ID
+gcloud config set project $DEVSHELL_PROJECT_ID
 gcloud services enable eventarc.googleapis.com
 
 # step2: configuration permissions
 # https://cloud.google.com/eventarc/docs/run/quickstart
-gcloud projects add-iam-policy-binding $PROJECT_ID \
+gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID \
     --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
     --role='roles/eventarc.developer'
 
-gcloud projects add-iam-policy-binding $PROJECT_ID \
+gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID \
     --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
     --role='roles/eventarc.eventReceiver'
 
-gcloud projects add-iam-policy-binding $PROJECT_ID \
+gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID \
     --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
     --role='roles/eventarc.serviceAgent'
 
