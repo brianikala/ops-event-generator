@@ -24,7 +24,7 @@ def handle_set_iam_policy(headers, body):
             'methodName': protoPayload['methodName'],
             'callerIp': protoPayload['requestMetadata']['callerIp'],
             'principalEmail': protoPayload['authenticationInfo']['principalEmail'],
-            'bindingDeltas': protoPayload['serviceData']['policyDelta']['bindingDeltas'] if 'policyDelta' in protoPayload['serviceData'] else [],
+            'bindingDeltas': protoPayload['serviceData']['policyDelta']['bindingDeltas'] if 'policyDelta' in protoPayload['serviceData'] and 'bindingDeltas' in protoPayload['serviceData']['policyDelta'] else [],
             'status': protoPayload['status'] if protoPayload['status'] else None
         },
         'header': {
