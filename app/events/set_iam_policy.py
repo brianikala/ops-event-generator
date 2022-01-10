@@ -1,47 +1,20 @@
-import os, sys
-import json
+"""Set IAM Policy
 
-from flask import request
+This module provides methods handle SetIamPolicy events
+
+"""
+import sys
+import json
 
 from google.cloud import pubsub_v1
 
-project_id = "cloud-tech-dev-2021" # prod
-topic_id = os.environ.get("TOPIC_ID")
+from app.utils.env import get_topic_id
 
-def hello_world():
-    return "eventarc/handlers/gcp_generic"
+# TODO: [Config]: Make ER project id as the environment variable
+PROJECT_ID = "cloud-tech-dev-2021"
 
-def event_dispatcher(event_name):
-    """
-    NOTE: 現在是每個 event 都會呼叫同一個 handler，之後如果有針對不同 event 要有客製化的 handler 就加入此
-    """
-    print(event_name)
-    handler = {
-        "SetIamPolicy": eventarc_generic_handler,
-        "SetOrgPolicy": eventarc_generic_handler,
-        "v1.compute.firewalls.insert": eventarc_generic_handler,
-        "v1.compute.firewalls.patch": eventarc_generic_handler,
-        "v1.compute.firewalls.delete": eventarc_generic_handler
-    }
-
-    handler[event_name]()
-    return f"method: {event_name}, result:"
-
-def eventarc_generic_handler():
-    print('Event received!')
-
-    print('HEADERS:')
-    headers = dict(request.headers)
-    headers.pop('Authorization', None)  # do not log authorization header if exists
-    print(headers)
-
-    print('BODY:')
-    body = dict(request.json)
-    print(body)
-
+def handle_set_iam_policy(headers, body):
     protoPayload = body['protoPayload']
-
-
     data = {
         'body': {
             'logName': body['logName'],
@@ -61,11 +34,13 @@ def eventarc_generic_handler():
         }
     }
 
+    # TODO: [Mod] Modulize the pubsub procedure
+    topic_id = get_topic_id()
     publisher = pubsub_v1.PublisherClient()
 
     # The `topic_path` method creates a fully qualified identifier
     # in the form `projects/{project_id}/topics/{topic_id}`
-    topic_path = publisher.topic_path(project_id, topic_id)
+    topic_path = publisher.topic_path(PROJECT_ID, topic_id)
 
     # Data must be a bytestring
     data = json.dumps(data).encode("utf-8")
@@ -73,6 +48,7 @@ def eventarc_generic_handler():
     # When you publish a message, the client returns a future.
     future = publisher.publish(topic_path, data, retry=None)
 
+    # TODO: [Log] Structured logging
     try:
         if future.result() is not None:
             print("Result: ", future.result())
