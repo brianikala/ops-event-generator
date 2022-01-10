@@ -66,7 +66,7 @@ def list_eventarc_triggers():
     data = response.json()
     if 'triggers' not in data:
         return []
-    # TODO: [Valid] Filter triggers by destinationRunRegion to list only the triggers created by EG
+    # TODO: [Valid] Filter triggers by destinationRunService to list only the triggers created by EG
     result = [
         {
             'id': trigger['name'].split('/')[-1],
