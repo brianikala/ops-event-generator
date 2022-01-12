@@ -8,10 +8,7 @@ import json
 
 from google.cloud import pubsub_v1
 
-from app.utils.env import get_topic_id
-
-# TODO: [Config]: Make ER project id as the environment variable
-PROJECT_ID = "cloud-tech-dev-2021"
+from app.utils.pubsub import publish
 
 def handle_set_iam_policy(headers, body):
     protoPayload = body['protoPayload']
@@ -34,19 +31,7 @@ def handle_set_iam_policy(headers, body):
         }
     }
 
-    # TODO: [Mod] Modulize the pubsub procedure
-    topic_id = get_topic_id()
-    publisher = pubsub_v1.PublisherClient()
-
-    # The `topic_path` method creates a fully qualified identifier
-    # in the form `projects/{project_id}/topics/{topic_id}`
-    topic_path = publisher.topic_path(PROJECT_ID, topic_id)
-
-    # Data must be a bytestring
-    data = json.dumps(data).encode("utf-8")
-
-    # When you publish a message, the client returns a future.
-    future = publisher.publish(topic_path, data, retry=None)
+    future = publish(data)
 
     # TODO: [Log] Structured logging
     try:

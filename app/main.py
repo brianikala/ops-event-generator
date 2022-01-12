@@ -103,8 +103,8 @@ def eventarc_handler(event_name):
         'body': body,
     }))
     if event_name in events.handlers:
-        events.handlers[event_name](headers, body)
-    return f'method: {event_name}'
+        return events.handlers[event_name](headers, body)
+    return f'Method not supported: {event_name}'
 
 #### ↑ APIS ↑ ####
 
