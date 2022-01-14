@@ -98,12 +98,26 @@ def eventarc_handler(event_name):
     body = dict(request.json)
     print(json.dumps({
         'severity': 'INFO',
-        'message': 'Received eventarc event',
+        'message': f'Received eventarc event: {event_name}',
         'headers': headers,
         'body': body,
     }))
     if event_name in events.handlers:
-        return events.handlers[event_name](headers, body)
+        result = events.handlers[event_name](headers, body)
+        print(json.dumps({
+            'severity': 'INFO',
+            'message': f'Successfully handle eventarc event: {event_name}',
+            'headers': headers,
+            'body': body,
+            'result': result,
+        }))
+        return result
+    print(json.dumps({
+        'severity': 'INFO',
+        'message': f'Method not supported: {event_name}',
+        'headers': headers,
+        'body': body
+    }))
     return f'Method not supported: {event_name}'
 
 #### ↑ APIS ↑ ####
