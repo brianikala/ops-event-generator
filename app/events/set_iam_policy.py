@@ -4,9 +4,6 @@ This module provides methods handle SetIamPolicy events
 
 """
 import sys
-import json
-
-from google.cloud import pubsub_v1
 
 from app.utils.pubsub import publish
 
@@ -22,7 +19,7 @@ def handle_set_iam_policy(headers, body):
             'callerIp': protoPayload['requestMetadata']['callerIp'],
             'principalEmail': protoPayload['authenticationInfo']['principalEmail'],
             'bindingDeltas': protoPayload['serviceData']['policyDelta']['bindingDeltas'] if 'policyDelta' in protoPayload['serviceData'] and 'bindingDeltas' in protoPayload['serviceData']['policyDelta'] else [],
-            'status': protoPayload['status'] if protoPayload['status'] else None
+            'status': protoPayload['status'] if 'status' in protoPayload and protoPayload['status'] else None
         },
         'header': {
             'resourceName': headers['Ce-Resourcename'],
