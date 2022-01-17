@@ -7,6 +7,7 @@
 set -e
 
 USER=iKala-Cloud
+DEFAULT_CONFIG_PATH="./config.json"
 
 echo "Welcome to iKala AIOps! This is the part of ops event generator."
 echo "Please follow the prompted instructions to continue the installation."
@@ -23,6 +24,21 @@ fi
 read -e -n 100 -p "Please input your name (registered in iKala): " CUSTOMER
 echo "Your input name: ${CUSTOMER}"
 echo
+
+read -e -n 100 -p "Do you need to enable iKala Event Receiver Service? (y/N): " enable_event_receiver
+test -z "$enable_event_receiver" && enable_event_receiver="N"
+
+if test "$enable_event_receiver" = "N" -o "$enable_event_receiver" = "n" ; then
+    read -e -n 100 -p "Please input the path of Eventarc config file (default): " config_path
+    test -z "$config_path" && config_path="default"
+    if test "$config_path" = "default" ; then
+        echo "Requesting default config file..."
+        curl -s https://raw.githubusercontent.com/iKala-Cloud/ops-event-generator/master/config/default.json > $DEFAULT_CONFIG_PATH
+        config_path=$DEFAULT_CONFIG_PATH
+    else
+        test -e "$config_path" || echo "Config file not found: $config_path" && exit
+    fi
+fi
 
 ####################################################################################
 # Select project to install EG (DEPRECATED)
@@ -55,7 +71,12 @@ PROJECT_NUMBER=$(gcloud projects describe ${DEVSHELL_PROJECT_ID} --format 'value
 TOPIC_ID="${CUSTOMER}_${PROJECT_NUMBER}"
 echo
 
-printf "Topic ID:\t%s\nCustomer name:\t%s\nProject ID:\t%s\n\n" $TOPIC_ID $CUSTOMER $DEVSHELL_PROJECT_ID
+# If the Event Receiver Service isn't enabled, Pub/Sub topic won't be used.
+if test "$enable_event_receiver" = "N" -o "$enable_event_receiver" = "n" ; then
+    printf "Customer name:\t%s\nProject ID:\t%s\n\n" $CUSTOMER $DEVSHELL_PROJECT_ID
+else
+    printf "Topic ID:\t%s\nCustomer name:\t%s\nProject ID:\t%s\n\n" $TOPIC_ID $CUSTOMER $DEVSHELL_PROJECT_ID
+fi
 echo "Is the configuration correct? (N/y): "
 read -e -n 100 correct
 [ -z "$correct" ] && agree="Y" 
@@ -64,11 +85,24 @@ if test "$correct" != "y" ; then
 fi
 
 # run gcloud command
-gcloud run deploy demeter --region=asia-east1 --no-allow-unauthenticated \
-    --image=gcr.io/cloud-tech-dev-2021/demeter:latest \
-    --min-instances=1 \
-    --set-env-vars TOPIC_ID=$TOPIC_ID \
-    --set-env-vars CUSTOMER=$CUSTOMER
+# If the environment variable ENABLE_ER is not set, the default value is "false".
+if test "$enable_event_receiver" = "N" -o "$enable_event_receiver" = "n" ; then
+    gcloud run deploy demeter --region=asia-east1 --no-allow-unauthenticated \
+        --image=gcr.io/cloud-tech-dev-2021/demeter \
+        --min-instances=1 \
+        --set-env-vars TOPIC_ID=$TOPIC_ID \
+        --set-env-vars CUSTOMER=$CUSTOMER \
+        --set-env-vars PROJECT_NUMBER=$PROJECT_NUMBER \
+        --set-env-vars ENABLE_ER=false
+else
+    gcloud run deploy demeter --region=asia-east1 --no-allow-unauthenticated \
+        --image=gcr.io/cloud-tech-dev-2021/demeter \
+        --min-instances=1 \
+        --set-env-vars TOPIC_ID=$TOPIC_ID \
+        --set-env-vars CUSTOMER=$CUSTOMER \
+        --set-env-vars PROJECT_NUMBER=$PROJECT_NUMBER \
+        --set-env-vars ENABLE_ER=true
+fi
 
 ##############################################################################
 
@@ -98,7 +132,11 @@ gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID \
 
 ## Step 3: create eventarc triggers
 SERVICE_URL=$(gcloud run services describe demeter --region=asia-east1 --format 'value(status.url)')
-result=$(curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" "${SERVICE_URL}/create/eventarc/triggers")
+if test "$enable_event_receiver" = "N" -o "$enable_event_receiver" = "n" ; then
+    result=$(curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" -H "Content-Type: application/json" -d @${config_path} "${SERVICE_URL}/update/eventarc/triggers")
+else
+    result=$(curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" "${SERVICE_URL}/create/eventarc/triggers")
+fi
 if [ "$result" != "success" ]; then
   echo "Failed to create Cloud eventarc triggers. Check up the logs of demeter to know more detailed."
   echo "https://console.cloud.google.com/run/detail/asia-east1/demeter/logs?project=${DEVSHELL_PROJECT_ID}"
