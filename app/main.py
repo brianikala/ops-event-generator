@@ -8,7 +8,7 @@ from flask_apscheduler import APScheduler
 from app.utils.env import get_port
 from app.utils.adminrun import get_enabled_events
 from app.utils.eventarc import create_eventarc_triggers, update_eventarc_triggers
-from app import events
+from app.events import handlers
 
 app = Flask(__name__)
 
@@ -102,8 +102,8 @@ def eventarc_handler(event_name):
         'headers': headers,
         'body': body,
     }))
-    if event_name in events.handlers:
-        result = events.handlers[event_name](headers, body)
+    if event_name in handlers:
+        result = handlers[event_name](headers, body)
         print(json.dumps({
             'severity': 'INFO',
             'message': f'Successfully handle eventarc event: {event_name}',
