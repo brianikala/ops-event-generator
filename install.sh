@@ -7,7 +7,7 @@
 set -e
 
 USER=iKala-Cloud
-DEFAULT_CONFIG_PATH="./config/default.json"
+DEFAULT_CONFIG_PATH="./config.json"
 
 echo "Welcome to iKala AIOps! This is the part of ops event generator."
 echo "Please follow the prompted instructions to continue the installation."
