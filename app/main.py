@@ -102,7 +102,7 @@ def update_eventarc_post():
     """
     if get_enable_er():
         return "Failed: Event Receiver Service is enabled. Please update Eventarc Triggers by Admin Console."
-    data = request.json()
+    data = request.json
     if not data or 'events' not in data:
         return "Failed: Invalid request. Please check the request body."
     data['events'] = [event for event in data['events'] if event['enabled']]
