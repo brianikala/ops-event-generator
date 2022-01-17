@@ -32,6 +32,7 @@ if test "$enable_event_receiver" = "N" -o "$enable_event_receiver" = "n" ; then
     read -e -n 100 -p "Please input the path of Eventarc config file (default): " config_path
     test -z "$config_path" && config_path="default"
     if test "$config_path" = "default" ; then
+        echo "Requesting default config file..."
         curl -s https://raw.githubusercontent.com/iKala-Cloud/ops-event-generator/feature-disable-er/config/default.json > $DEFAULT_CONFIG_PATH
         config_path=$DEFAULT_CONFIG_PATH
     else
