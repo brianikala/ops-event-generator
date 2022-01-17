@@ -16,7 +16,7 @@ echo
 
 ## Agreement
 read -e -n 100 -p "By using iKala AIOps, you agree that you will obey iKala security policy? (Y/n): " agree
-test -z "$agree" && agree="Y" 
+test -z "$agree" -o "$agree" = "y" && agree="Y"
 if test "$agree" != "Y" ; then
     exit
 fi
@@ -53,10 +53,10 @@ fi
 #     if test $i = 0 ; then
 #         printf "\tProject Number\tProject ID\n"
 #         echo "--------------------------"
-#     else 
+#     else
 #         printf "(%s)\t%s\t%s\n" $i $PNO $PID
 #     fi
-    
+
 #     projectList+=($PID)
 #     ((i=i+1))
 # done
@@ -79,7 +79,7 @@ else
 fi
 echo "Is the configuration correct? (N/y): "
 read -e -n 100 correct
-[ -z "$correct" ] && agree="Y" 
+[ -z "$correct" -o "$correct" = "Y" ] && correct="y"
 if test "$correct" != "y" ; then
  exit
 fi
@@ -142,7 +142,7 @@ if [ "$result" != "success" ]; then
   echo "https://console.cloud.google.com/run/detail/asia-east1/demeter/logs?project=${DEVSHELL_PROJECT_ID}"
   progress="failed"
 fi
-    
+
 echo
 
 if [ "$progress" == "completed" ]; then
