@@ -7,9 +7,7 @@
 set -e
 
 USER=iKala-Cloud
-SCRIPT=$(readlink -f "$0")
-SCRIPT_PATH=$(dirname "$SCRIPT")
-DEFAULT_CONFIG_PATH="${SCRIPT_PATH}/config/default.json"
+DEFAULT_CONFIG_PATH="./config/default.json"
 
 echo "Welcome to iKala AIOps! This is the part of ops event generator."
 echo "Please follow the prompted instructions to continue the installation."
