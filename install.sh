@@ -69,7 +69,6 @@ fi
 echo "Reading project metadata..."
 PROJECT_NUMBER=$(gcloud projects describe ${DEVSHELL_PROJECT_ID} --format 'value(projectNumber)')
 TOPIC_ID="${CUSTOMER}_${PROJECT_NUMBER}"
-SERVICE_ACCOUNT="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
 echo
 
 # If the Event Receiver Service isn't enabled, Pub/Sub topic won't be used.
