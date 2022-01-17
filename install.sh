@@ -33,7 +33,7 @@ if test "$enable_event_receiver" = "N" -o "$enable_event_receiver" = "n" ; then
     test -z "$config_path" && config_path="default"
     if test "$config_path" = "default" ; then
         echo "Requesting default config file..."
-        curl -s https://raw.githubusercontent.com/iKala-Cloud/ops-event-generator/feature-disable-er/config/default.json > $DEFAULT_CONFIG_PATH
+        curl -s https://raw.githubusercontent.com/iKala-Cloud/ops-event-generator/master/config/default.json > $DEFAULT_CONFIG_PATH
         config_path=$DEFAULT_CONFIG_PATH
     else
         test -e "$config_path" || echo "Config file not found: $config_path" && exit
@@ -89,7 +89,7 @@ fi
 # If the environment variable ENABLE_ER is not set, the default value is "false".
 if test "$enable_event_receiver" = "N" -o "$enable_event_receiver" = "n" ; then
     gcloud run deploy demeter --region=asia-east1 --no-allow-unauthenticated \
-        --image=gcr.io/cloud-tech-dev-2021/demeter-test \
+        --image=gcr.io/cloud-tech-dev-2021/demeter \
         --min-instances=1 \
         --set-env-vars TOPIC_ID=$TOPIC_ID \
         --set-env-vars CUSTOMER=$CUSTOMER \
@@ -97,7 +97,7 @@ if test "$enable_event_receiver" = "N" -o "$enable_event_receiver" = "n" ; then
         --set-env-vars ENABLE_ER=false
 else
     gcloud run deploy demeter --region=asia-east1 --no-allow-unauthenticated \
-        --image=gcr.io/cloud-tech-dev-2021/demeter-test \
+        --image=gcr.io/cloud-tech-dev-2021/demeter \
         --min-instances=1 \
         --set-env-vars TOPIC_ID=$TOPIC_ID \
         --set-env-vars CUSTOMER=$CUSTOMER \
