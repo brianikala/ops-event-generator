@@ -1,13 +1,13 @@
 """Set IAM Policy
 
-This module provides methods handle SetIamPolicy events
+This module provides methods handle v1.compute.firewalls.delete events
 
 """
 import sys
 
 from app.utils.pubsub import publish
 
-def handle_set_iam_policy(headers, body):
+def handle_delete_firewall(headers, body):
     protoPayload = body['protoPayload']
     data = {
         'body': {
@@ -18,8 +18,7 @@ def handle_set_iam_policy(headers, body):
             'methodName': protoPayload['methodName'],
             'callerIp': protoPayload['requestMetadata']['callerIp'],
             'principalEmail': protoPayload['authenticationInfo']['principalEmail'],
-            'bindingDeltas': protoPayload['serviceData']['policyDelta']['bindingDeltas'] if 'policyDelta' in protoPayload['serviceData'] and 'bindingDeltas' in protoPayload['serviceData']['policyDelta'] else [],
-            'status': protoPayload['status'] if 'status' in protoPayload and protoPayload['status'] else None
+            'status': protoPayload['status'] if 'status' in protoPayload and protoPayload['status'] else None,
         },
         'header': {
             'resourceName': headers['Ce-Resourcename'],

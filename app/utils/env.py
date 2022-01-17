@@ -15,6 +15,9 @@ ABC = os.environ.get("ABC")
 """
 import os
 
+# TODO: [Config]: Make ER project id as the environment variable
+ER_PROJECT_ID = "cloud-tech-dev-2021"
+
 def get_port():
     """
     Returns the port number of the application.
