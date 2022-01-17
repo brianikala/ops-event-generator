@@ -1,0 +1,54 @@
+{
+    "events": [
+        {
+            "destinationRunPath": "/eventarc/handler/gcp/SetIamPolicy",
+            "destinationRunRegion": "asia-east1",
+            "destinationRunService": "demeter",
+            "enabled": true,
+            "methodName": "SetIamPolicy",
+            "serviceName": "cloudresourcemanager.googleapis.com",
+            "trigger": "cloud-resource-manager-set-iam-policy",
+            "type": "google.cloud.audit.log.v1.written"
+        },
+        {
+            "destinationRunPath": "/eventarc/handler/gcp/SetOrgPolicy",
+            "destinationRunRegion": "asia-east1",
+            "destinationRunService": "demeter",
+            "enabled": true,
+            "methodName": "SetOrgPolicy",
+            "serviceName": "cloudresourcemanager.googleapis.com",
+            "trigger": "cloud-resource-manager-set-org-policy",
+            "type": "google.cloud.audit.log.v1.written"
+        },
+        {
+            "destinationRunPath": "/eventarc/handler/gcp/InsertFirewall",
+            "destinationRunRegion": "asia-east1",
+            "destinationRunService": "demeter",
+            "enabled": true,
+            "methodName": "v1.compute.firewalls.insert",
+            "serviceName": "compute.googleapis.com",
+            "trigger": "compute-firewall-insert",
+            "type": "google.cloud.audit.log.v1.written"
+        },
+        {
+            "destinationRunPath": "/eventarc/handler/gcp/PatchFirewall",
+            "destinationRunRegion": "asia-east1",
+            "destinationRunService": "demeter",
+            "enabled": true,
+            "methodName": "v1.compute.firewalls.patch",
+            "serviceName": "compute.googleapis.com",
+            "trigger": "compute-firewall-patch",
+            "type": "google.cloud.audit.log.v1.written"
+        },
+        {
+            "destinationRunPath": "/eventarc/handler/gcp/DeleteFirewall",
+            "destinationRunRegion": "asia-east1",
+            "destinationRunService": "demeter",
+            "enabled": true,
+            "methodName": "v1.compute.firewalls.delete",
+            "serviceName": "compute.googleapis.com",
+            "trigger": "compute-firewall-delete",
+            "type": "google.cloud.audit.log.v1.written"
+        }
+    ]
+}
