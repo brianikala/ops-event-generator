@@ -35,3 +35,18 @@ def get_topic_id():
     Returns the topic id of the application.
     """
     return os.environ.get("TOPIC_ID")
+
+def get_project_number():
+    """
+    Returns the project number of the application.
+    """
+    return os.environ.get("PROJECT_NUMBER")
+
+def get_enable_er():
+    """
+    Returns the enable_er of the application.
+    """
+    enable_er = os.environ.get("ENABLE_ER")
+    if enable_er is not None and enable_er.lower() in ('true', '1'):
+        return True
+    return False

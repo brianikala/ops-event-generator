@@ -25,11 +25,12 @@ def create_eventarc_triggers():
     creation_result = [create_eventarc_trigger(event, service_account) for event in events]
     return "success"
 
-def update_eventarc_triggers():
+def update_eventarc_triggers(data=None):
     """Update Eventarc Triggers"""
-    data = get_enabled_events()
+    if data is None:
+        data = get_enabled_events()
     if not data or 'events' not in data or 'service_account' not in data:
-        return 'failed'
+        return 'Failed: the format of the data is not correct'
     events = data['events']
     service_account = data['service_account'][0]
     event_methods = [event['methodName'] for event in events]
