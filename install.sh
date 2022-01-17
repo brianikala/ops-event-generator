@@ -28,7 +28,7 @@ echo
 read -e -n 100 -p "Do you need to enable iKala Event Receiver Service? (y/N): " enable_event_receiver
 test -z "$enable_event_receiver" && enable_event_receiver="N"
 
-if test "$enable_event_receiver" != "N" -a "$enable_event_receiver" != "n" ; then
+if test "$enable_event_receiver" = "N" -o "$enable_event_receiver" = "n" ; then
     read -e -n 100 -p "Please input the path of Eventarc config file (default): " config_path
     test -z "$config_path" && config_path="default"
     if test "$config_path" = "default" ; then
