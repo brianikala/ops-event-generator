@@ -40,32 +40,6 @@ if test "$enable_event_receiver" = "N" -o "$enable_event_receiver" = "n" ; then
     fi
 fi
 
-####################################################################################
-# Select project to install EG (DEPRECATED)
-# projectList=()
-# i=0
-# for pList in $(gcloud projects list --format='csv(projectId, projectNumber)')
-# do
-#     IFS=', ' read -r -a list <<< $pList
-#     PID="${list[0]}"
-#     PNO="${list[1]}"
-
-#     if test $i = 0 ; then
-#         printf "\tProject Number\tProject ID\n"
-#         echo "--------------------------"
-#     else
-#         printf "(%s)\t%s\t%s\n" $i $PNO $PID
-#     fi
-
-#     projectList+=($PID)
-#     ((i=i+1))
-# done
-# read -e -n 100 -p "Please select the project you want to install the agent: " opt
-# echo "You select project ID: ${projectList[$opt]}"
-# PROJECT_ID=${projectList[$opt]}
-# echo
-####################################################################################
-
 echo "Reading project metadata..."
 PROJECT_NUMBER=$(gcloud projects describe ${DEVSHELL_PROJECT_ID} --format 'value(projectNumber)')
 TOPIC_ID="${CUSTOMER}_${PROJECT_NUMBER}"
@@ -130,7 +104,14 @@ gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID \
     --role='roles/eventarc.serviceAgent' \
     --condition=None
 
-## Step 3: create eventarc triggers
+## Step 3: enable audit log for eventarc
+gcloud projects get-iam-policy $DEVSHELL_PROJECT_ID --format yaml > /tmp/policy-get.yaml
+# cat /tmp/policy-get.yaml
+python3 configAuditLog.py
+# cat /tmp/policy-set.yaml
+gcloud projects set-iam-policy $DEVSHELL_PROJECT_ID /tmp/policy-set.yaml
+
+## Step 4: create eventarc triggers
 SERVICE_URL=$(gcloud run services describe demeter --region=asia-east1 --format 'value(status.url)')
 if test "$enable_event_receiver" = "N" -o "$enable_event_receiver" = "n" ; then
     result=$(curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" -H "Content-Type: application/json" -d @${config_path} "${SERVICE_URL}/update/eventarc/triggers")
