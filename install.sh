@@ -105,11 +105,19 @@ gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID \
     --condition=None
 
 ## Step 3: enable audit log for eventarc
+echo "[Enabling audit log]"
+echo "fetching configure script..."
+curl -s https://raw.githubusercontent.com/iKala-Cloud/ops-event-generator/master/configAuditLog.py -o configAuditLog.py
+echo "fetching IAM policy..."
 gcloud projects get-iam-policy $DEVSHELL_PROJECT_ID --format yaml > /tmp/policy-get.yaml
+echo "modifying IAM policy..."
 # cat /tmp/policy-get.yaml
 python3 configAuditLog.py
 # cat /tmp/policy-set.yaml
+echo "setting IAM policy..."
 gcloud projects set-iam-policy $DEVSHELL_PROJECT_ID /tmp/policy-set.yaml
+rm configAuditLog.py
+echo "Audit log enabled"
 
 ## Step 4: create eventarc triggers
 SERVICE_URL=$(gcloud run services describe demeter --region=asia-east1 --format 'value(status.url)')
