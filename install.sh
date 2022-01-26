@@ -53,7 +53,8 @@ else
 fi
 echo "Is the configuration correct? (N/y): "
 read -e -n 100 correct
-[ -z "$correct" -o "$correct" = "Y" ] && correct="y"
+[ "$correct" = "Y" ] && correct="y"
+[ -z "$correct" -o "$correct" != "y" ] && correct="N"
 if test "$correct" != "y" ; then
  exit
 fi
