@@ -53,7 +53,8 @@ else
 fi
 echo "Is the configuration correct? (N/y): "
 read -e -n 100 correct
-[ -z "$correct" -o "$correct" = "Y" ] && correct="y"
+[ "$correct" = "Y" ] && correct="y"
+[ -z "$correct" -o "$correct" != "y" ] && correct="N"
 if test "$correct" != "y" ; then
  exit
 fi
@@ -127,9 +128,11 @@ else
     result=$(curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" "${SERVICE_URL}/create/eventarc/triggers")
 fi
 if [ "$result" != "success" ]; then
-  echo "Failed to create Cloud eventarc triggers. Check up the logs of demeter to know more detailed."
-  echo "https://console.cloud.google.com/run/detail/asia-east1/demeter/logs?project=${DEVSHELL_PROJECT_ID}"
-  progress="failed"
+    echo "Failed to create Cloud eventarc triggers. Check up the logs of demeter to know more detailed."
+    echo "https://console.cloud.google.com/run/detail/asia-east1/demeter/logs?project=${DEVSHELL_PROJECT_ID}"
+    progress="failed"
+else
+    progress="completed"
 fi
 
 echo
