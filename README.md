@@ -84,3 +84,41 @@ https://demeter-i7wsmqzjha-de.a.run.app
 
 - [Cloud Pub/Sub - Using client libraries](https://cloud.google.com/pubsub/docs/quickstart-client-libraries#pubsub-client-libraries-python)
 - [Cloud Run - Build and deploy (Python)](https://cloud.google.com/run/docs/quickstarts/build-and-deploy/python)
+
+## CI/CD
+Currently, we use GitHub Action to build the demeter image and push to Google Artifact Registry. The configuration of GitHub Action is **[.github/workflows/docker-image.yml](.github/workflows/docker-image.yml)**.
+
+Here we setup which branches should trigger a build. Currently, we only build any push commit or merge commit of branch **master**.
+```yaml
+on:
+  push:
+    branches: [ master ]
+  #   branches: [ master, feature-/*, hotfix-/* ] # move to another workflow
+  # pull_request: # move to another workflow
+  #   branches: [ master, feature-/*, hotfix-/* ] # move to another workflow
+```
+
+In order to build and push to Google Container Registry, we have to setup gcloud CLI tool:
+
+```yaml
+    # Setup gcloud CLI
+    # https://github.com/google-github-actions/setup-gcloud
+    - uses: google-github-actions/setup-gcloud@master
+      with:
+        version: '286.0.0'
+        service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        export_default_credentials: true
+
+```
+
+Finally, we make a build and push image.
+```yaml
+  # Build and push image to Google Container Registry
+    - name: Build
+      run: |-
+        gcloud builds submit \
+          --quiet \
+          --tag "gcr.io/$PROJECT_ID/$SERVICE_NAME:latest"
+```
