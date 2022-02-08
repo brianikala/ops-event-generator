@@ -25,7 +25,7 @@ read -e -n 100 -p "Please input your name (registered in iKala): " CUSTOMER
 echo "Your input name: ${CUSTOMER}"
 echo
 
-read -e -n 100 -p "Do you need to enable iKala Event Receiver Service? (y/N): " enable_event_receiver
+read -e -n 100 -p "Do you need to enable iKala Event Receiver Service? Before enable it, make sure that the customer is registered in iKala and the project is created on Admin Run Console (y/N): " enable_event_receiver
 test -z "$enable_event_receiver" && enable_event_receiver="N"
 
 if test "$enable_event_receiver" = "N" -o "$enable_event_receiver" = "n" ; then
