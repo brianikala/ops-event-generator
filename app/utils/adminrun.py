@@ -62,3 +62,34 @@ def get_enabled_events():
         'data': response.json() if response.status_code == 200 else response.text
     }))
     return result
+
+def check_er():
+    """Check Admin Run API"""
+    project_id = get_project_id()
+    if project_id is None:
+        return 'Can not get Project ID. Please check the Application Default Credentials on Cloud Run.'
+    customer = get_customer()
+    if customer is None:
+        return 'Can not get Customer. Please check the environment variables on Cloud Run.'
+    base_url = get_base_url(customer)
+    api_path = f'{base_url}/api/bq/get_enabled_events?customer={customer}&project_id={project_id}'
+    auth_req = Request()
+    identity_token = id_token.fetch_id_token(auth_req, api_path)
+    headers = {
+        'Authorization': f'Bearer {identity_token}',
+        'Content-Type': 'application/json; charset=utf-8'
+    }
+    response = requests.get(api_path, headers=headers)
+    print(json.dumps({
+        'severity': 'INFO',
+        'status_code': response.status_code,
+        'data': response.json() if response.status_code == 200 else response.text
+    }))
+    if response.status_code == 200:
+        return 'success'
+    elif response.status_code == 404:
+        return 'The Admin Run for this customer does not exist. Please make sure that the customer is registered on iKala Event Receiver Service.'
+    elif response.status_code == 403:
+        return 'The Service Account does not have the permission to access Admin Run API. Please make sure that the Service Account used by the Cloud Run is added to the project on Admin Run Console.'
+
+    return 'There are some internal server errors. Please make sure that the project is set properly on Admin Run Console, or contact the iKala.'

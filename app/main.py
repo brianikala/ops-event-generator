@@ -6,7 +6,7 @@ from flask import request
 from flask_apscheduler import APScheduler
 
 from app.utils.env import get_enable_er, get_port, get_project_number
-from app.utils.adminrun import get_enabled_events
+from app.utils.adminrun import check_er, get_enabled_events
 from app.utils.eventarc import create_eventarc_triggers, list_eventarc_triggers, update_eventarc_triggers
 from app.events import handlers
 
@@ -148,6 +148,17 @@ def eventarc_handler(event_name):
         'body': body
     }))
     return f'Method not supported: {event_name}'
+
+@app.route('/check_er', methods=['GET'])
+def handle_check_er():
+    """API to check the Admin Run API
+
+    Typical Usage:
+    curl -X GET "$RUN_URL/check_er" \
+    -H "Authorization: Bearer $(gcloud auth print-identity-token)"
+
+    """
+    return check_er()
 
 #### ↑ APIS ↑ ####
 
