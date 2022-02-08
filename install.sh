@@ -77,6 +77,16 @@ else
         --set-env-vars CUSTOMER=$CUSTOMER \
         --set-env-vars PROJECT_NUMBER=$PROJECT_NUMBER \
         --set-env-vars ENABLE_ER=true
+    # Check if the ER is set up correctly.
+    echo "Checking if the Event Receiver Service is set up correctly..."
+    SERVICE_URL=$(gcloud run services describe demeter --region=asia-east1 --format 'value(status.url)')
+    result=$(curl -s -X GET "$SERVICE_URL/check_er" -H "Authorization: Bearer $(gcloud auth print-identity-token)")
+    if [ "$result" != "success" ]; then
+        echo "$result"
+        exit
+    else
+        echo "iKala Event Receiver Service is set up correctly."
+    fi
 fi
 
 ##############################################################################
