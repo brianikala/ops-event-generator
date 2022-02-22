@@ -3,10 +3,13 @@ import yaml
 with open('/tmp/policy-get.yaml', 'r') as getf:
     data = yaml.load(getf, Loader=yaml.FullLoader)
 
-print('[Before]')
-print(yaml.dump(data['auditConfigs']))
-
-services = [d['service'] for d in data['auditConfigs']]
+services = []
+if 'auditConfigs' in data:
+    print('[Original]')
+    print(yaml.dump(data['auditConfigs']))
+    services = [d['service'] for d in data['auditConfigs']]
+else:
+    data['auditConfigs'] = []
 
 # Audit log for cloud-resource-manager-set-*-policy
 if 'cloudresourcemanager.googleapis.com' not in services:    
@@ -34,8 +37,10 @@ if 'compute.googleapis.com' not in services:
 else:
     print('Audit log of Compute Engine API already enable')
 
+
+# Override
 print('-----------------------------\n')
-print('[After]')
+print('[Updated]')
 print(yaml.dump(data['auditConfigs']))
 
 with open('/tmp/policy-set.yaml', 'w') as setf:
