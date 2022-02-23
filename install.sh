@@ -115,6 +115,12 @@ gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID \
     --role='roles/eventarc.serviceAgent' \
     --condition=None
 
+gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID \
+    --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+    --role='roles/run.invoker' \
+    --condition=None
+    
+
 ## Step 3: enable audit log for eventarc
 echo "[Enabling audit log]"
 echo "fetching configure script..."
