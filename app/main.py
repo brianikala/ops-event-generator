@@ -116,7 +116,7 @@ def eventarc_handler(event_name):
     """API to handle eventarc events
 
     Typical Usage:
-    curl -X POST "$RUN_URL/eventarc/handler/gcp/event_name" \
+    curl -X POST "$RUN_URL/eventarc/handler/gcp/<event_name>" \
     -H "Authorization: Bearer $(gcloud auth print-identity-token)" \
 
     """
