@@ -122,3 +122,7 @@ Finally, we make a build and push image.
           --quiet \
           --tag "gcr.io/$PROJECT_ID/$SERVICE_NAME:latest"
 ```
+## Contributor
+- Veck Hsiao (@fbukevin)
+- Jacky Liu (@JackywithaWhiteDog)
+- Sammy Kang (@weihsuankang)
