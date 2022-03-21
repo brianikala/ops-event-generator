@@ -38,17 +38,17 @@ else:
     print('Audit log of Compute Engine API already enable')
 
 # Audit log for enable service
-if 'service.googleapis.com' not in services:  
+if 'serviceusage.googleapis.com' not in services:  
     data['auditConfigs'].append({
         'auditLogConfigs': [
                 { "logType": "ADMIN_READ" },
                 { "logType": "DATA_WRITE" },
                 { "logType": "DATA_READ" }
         ],
-        'service': 'service.googleapis.com'
+        'service': 'serviceusage.googleapis.com'
     })
 else:
-    print('Audit log of Compute Engine API already enable')
+    print('Audit log of Service Usage API already enable')
 
 # Override
 print('-----------------------------\n')
