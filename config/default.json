@@ -49,6 +49,16 @@
             "serviceName": "compute.googleapis.com",
             "trigger": "compute-firewall-delete",
             "type": "google.cloud.audit.log.v1.written"
-        }
+        },
+        {
+            "destinationRunPath": "/eventarc/handler/gcp/EnableService",
+            "destinationRunRegion": "asia-east1",
+            "destinationRunService": "demeter",
+            "enabled": true,
+            "methodName": "google.api.serviceusage.v1.ServiceUsage.EnableService",
+            "serviceName": "serviceusage.googleapis.com",
+            "trigger": "api-enable-service-usage",
+            "type": "google.cloud.audit.log.v1.written"
+        }        
     ]
 }
