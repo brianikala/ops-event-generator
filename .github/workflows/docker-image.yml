@@ -27,21 +27,18 @@ jobs:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
       if: always() # Pick up events even if the job fails or is canceled.
 
-    # - id: auth
-    #   uses: google-github-actions/auth@v0
-    #   with:
-    #     workload_identity_provider: 'projects/cloud-tech-dev-2021/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
-    #     service_account: 'demeter-github-action@cloud-tech-dev-2021.iam.gserviceaccount.com'
+    # Authorize
+    # https://github.com/google-github-actions/setup-gcloud#service-account-key-json
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v0'
+      with:
+        credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
 
     # Setup gcloud CLI
     # https://github.com/google-github-actions/setup-gcloud
     - uses: google-github-actions/setup-gcloud@v0
       with:
-        version: '286.0.0'
-        service_account_email: ${{ secrets.GCP_SA_EMAIL }}
-        service_account_key: ${{ secrets.GCP_SA_KEY }}
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
-        export_default_credentials: true
+        version: '354.0.0'
         
     # Print gcloud info
     - name: Info
